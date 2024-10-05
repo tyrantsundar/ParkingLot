@@ -2,8 +2,10 @@ package com.parkinglot.controllers;
 
 import com.parkinglot.dtos.request.ParkingSlotRequestDto;
 import com.parkinglot.dtos.response.ParkingSlotResponseDto;
+import com.parkinglot.entities.ParkingFloor;
 import com.parkinglot.entities.ParkingSlot;
 import com.parkinglot.entities.VehicleType;
+import com.parkinglot.services.ParkingFloorService;
 import com.parkinglot.services.ParkingSlotService;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -17,17 +19,20 @@ import java.util.stream.Collectors;
 @RequestMapping("/parkingSlot")
 public class ParkingSlotController {
     private ParkingSlotService parkingSlotService;
+    private ParkingFloorService parkingFloorService;
     private ModelMapper modelMapper;
     
-    ParkingSlotController(ParkingSlotService parkingSlotService, ModelMapper modelMapper){
+    ParkingSlotController(ParkingSlotService parkingSlotService, ParkingFloorService parkingFloorService, ModelMapper modelMapper){
         this.parkingSlotService = parkingSlotService;
+        this.parkingFloorService = parkingFloorService;
         this.modelMapper = modelMapper;
     }
 
 
     @PostMapping("/save")
     public ResponseEntity<ParkingSlotResponseDto> saveParkingSlot(@RequestBody ParkingSlotRequestDto request){
-        ParkingSlot parkingSlot = parkingSlotService.saveParkingSlot(request.getSlotNumber(), request.getVehicleType(), request.getParkingSlotStatus());
+        ParkingFloor parkingFloor = parkingFloorService.getParkingFloorByNumber(request.getParkingFloorNumber());
+        ParkingSlot parkingSlot = parkingSlotService.saveParkingSlot(request.getSlotNumber(), request.getVehicleType(), request.getParkingSlotStatus(),parkingFloor);
         ParkingSlotResponseDto responseDto = modelMapper.map(parkingSlot, ParkingSlotResponseDto.class);
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
@@ -39,7 +44,7 @@ public class ParkingSlotController {
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
-    @GetMapping("/all")
+    @GetMapping("/get/all")
     public ResponseEntity<List<ParkingSlotResponseDto>> getAllParkingSlots(){
         List<ParkingSlot> allParkingSlots = parkingSlotService.getAllParkingSlots();
         List<ParkingSlotResponseDto> ParkingSlotResponseDtoList = allParkingSlots.stream()
@@ -50,7 +55,8 @@ public class ParkingSlotController {
 
     @PutMapping("/update")
     public ResponseEntity<ParkingSlotResponseDto> updateParkingSlot(@RequestBody ParkingSlotRequestDto request){
-        ParkingSlot parkingSlot = parkingSlotService.updateParkingSlot(request.getSlotNumber(), request.getVehicleType(), request.getParkingSlotStatus());
+        ParkingFloor parkingFloor = parkingFloorService.getParkingFloorByNumber(request.getParkingFloorNumber());
+        ParkingSlot parkingSlot = parkingSlotService.updateParkingSlot(request.getSlotNumber(), request.getVehicleType(), request.getParkingSlotStatus(),parkingFloor);
         ParkingSlotResponseDto responseDto = modelMapper.map(parkingSlot, ParkingSlotResponseDto.class);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }

@@ -1,6 +1,7 @@
 package com.parkinglot.services.impl;
 
 
+import com.parkinglot.entities.ParkingFloor;
 import com.parkinglot.entities.ParkingSlot;
 import com.parkinglot.entities.ParkingSlotStatus;
 import com.parkinglot.entities.VehicleType;
@@ -16,9 +17,13 @@ public class ParkingSlotServiceImpl implements ParkingSlotService {
 
     private ParkingSlotRepository parkingSlotRepository;
 
+    public ParkingSlotServiceImpl(ParkingSlotRepository parkingSlotRepository) {
+        this.parkingSlotRepository = parkingSlotRepository;
+    }
+
     @Override
-    public ParkingSlot saveParkingSlot(String slotNumber, VehicleType vehicleType, ParkingSlotStatus parkingSlotStatus) {
-        ParkingSlot parkingSlot = new ParkingSlot(slotNumber,vehicleType,parkingSlotStatus);
+    public ParkingSlot saveParkingSlot(String slotNumber, VehicleType vehicleType, ParkingSlotStatus parkingSlotStatus, ParkingFloor parkingFloor) {
+        ParkingSlot parkingSlot = new ParkingSlot(slotNumber,vehicleType,parkingSlotStatus,parkingFloor);
         Date currentDate = new Date();
         parkingSlot.setCreatedAt(currentDate);
         parkingSlot.setUpdatedAt(currentDate);
@@ -26,12 +31,14 @@ public class ParkingSlotServiceImpl implements ParkingSlotService {
         return saveDParkingSlot;
     }
 
+
     @Override
-    public ParkingSlot updateParkingSlot(String slotNumber, VehicleType vehicleType, ParkingSlotStatus parkingSlotStatus) {
+    public ParkingSlot updateParkingSlot(String slotNumber, VehicleType vehicleType, ParkingSlotStatus parkingSlotStatus, ParkingFloor parkingFloor) {
         ParkingSlot parkingSlot = getParkingSlotByNumber(slotNumber);
         parkingSlot.setSlotNumber(slotNumber);
         parkingSlot.setVehicleType(vehicleType);
         parkingSlot.setParkingSlotStatus(parkingSlotStatus);
+        parkingSlot.setParkingFloor(parkingFloor);
         Date currentdate = new Date();
         parkingSlot.setUpdatedAt(currentdate);
         ParkingSlot updatedParkingSlot = parkingSlotRepository.save(parkingSlot);

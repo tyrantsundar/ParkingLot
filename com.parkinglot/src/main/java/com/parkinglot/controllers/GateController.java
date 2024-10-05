@@ -4,7 +4,9 @@ import com.parkinglot.dtos.request.GateRequestDto;
 import com.parkinglot.dtos.response.GateResponseDto;
 import com.parkinglot.entities.Gate;
 import com.parkinglot.entities.GateStatus;
+import com.parkinglot.entities.ParkingLot;
 import com.parkinglot.services.GateService;
+import com.parkinglot.services.ParkingLotService;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,16 +19,19 @@ import java.util.stream.Collectors;
 public class GateController {
 
     private GateService gateService;
+    private ParkingLotService parkingLotService;
     private ModelMapper modelMapper;
 
-    GateController(GateService gateService, ModelMapper modelMapper){
+    GateController(GateService gateService, ParkingLotService parkingLotService, ModelMapper modelMapper){
         this.gateService = gateService;
+        this.parkingLotService = parkingLotService;
         this.modelMapper = modelMapper;
     }
 
     @PostMapping("/save")
     public ResponseEntity<GateResponseDto> saveGate(@RequestBody GateRequestDto request){
-        Gate gate = gateService.saveGate(request.getGateNumber(), request.getGateType(), request.getGateStatus());
+        ParkingLot parkingLot = parkingLotService.getParkingLotByName(request.getParkingLotName());
+        Gate gate = gateService.saveGate(request.getGateNumber(), request.getGateType(), request.getGateStatus(),parkingLot);
         GateResponseDto responseDto = modelMapper.map(gate, GateResponseDto.class);
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
@@ -49,12 +54,13 @@ public class GateController {
 
     @PostMapping("/update")
     public ResponseEntity<GateResponseDto> updateGate(@RequestBody GateRequestDto request){
-        Gate gate = gateService.updateGate(request.getGateNumber(), request.getGateType(), request.getGateStatus());
+        ParkingLot parkingLot = parkingLotService.getParkingLotByName(request.getParkingLotName());
+        Gate gate = gateService.updateGate(request.getGateNumber(), request.getGateType(), request.getGateStatus(),parkingLot);
         GateResponseDto responseDto = modelMapper.map(gate, GateResponseDto.class);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
-    @GetMapping("/status/{gateStatus}")
+    @GetMapping("/get/status/{gateStatus}")
     public ResponseEntity<List<GateResponseDto>> getGateByStatus(@PathVariable("gateStatus")String gateStatus){
         GateStatus gateStatusEnum = GateStatus.valueOf(gateStatus);
         List<Gate> gatesList = gateService.getGateByStatus(gateStatusEnum);

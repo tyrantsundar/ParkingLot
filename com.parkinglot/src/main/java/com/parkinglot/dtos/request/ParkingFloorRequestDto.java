@@ -11,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ParkingFloorRequestDto {
-    private ParkingLotRequestDto parkingLot;
+    private String parkingLotName;
     private String floorNumber;
     private List<ParkingSlotRequestDto> parkingSlots;
     private List<VehicleType> supportedVehicleTypes;

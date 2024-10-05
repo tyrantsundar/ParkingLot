@@ -3,6 +3,7 @@ package com.parkinglot.services.impl;
 import com.parkinglot.entities.Gate;
 import com.parkinglot.entities.GateStatus;
 import com.parkinglot.entities.GateType;
+import com.parkinglot.entities.ParkingLot;
 import com.parkinglot.repositories.GateRepository;
 import com.parkinglot.services.GateService;
 import org.springframework.stereotype.Service;
@@ -20,8 +21,8 @@ public class GateServiceImpl implements GateService {
     }
 
     @Override
-    public Gate saveGate(String gateNumber, GateType gateType, GateStatus gateStatus) {
-        Gate gate = new Gate(gateNumber,gateType,gateStatus);
+    public Gate saveGate(String gateNumber, GateType gateType, GateStatus gateStatus, ParkingLot parkingLot) {
+        Gate gate = new Gate(gateNumber,gateType,gateStatus, parkingLot);
         Date currentDate = new Date();
         gate.setCreatedAt(currentDate);
         gate.setUpdatedAt(currentDate);
@@ -30,7 +31,7 @@ public class GateServiceImpl implements GateService {
     }
 
     @Override
-    public Gate updateGate(String gateNumber, GateType gateType, GateStatus gateStatus) {
+    public Gate updateGate(String gateNumber, GateType gateType, GateStatus gateStatus, ParkingLot parkingLot) {
        Gate gate = getGateByNumber(gateNumber);
        gate.setGateNumber(gateNumber);
        gate.setGateType(gateType);

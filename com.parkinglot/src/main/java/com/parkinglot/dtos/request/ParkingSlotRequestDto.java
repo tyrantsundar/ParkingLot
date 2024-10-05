@@ -15,4 +15,5 @@ public class ParkingSlotRequestDto {
     private String slotNumber;
     private VehicleType vehicleType;
     private ParkingSlotStatus parkingSlotStatus;
+    private String parkingFloorNumber;
 }

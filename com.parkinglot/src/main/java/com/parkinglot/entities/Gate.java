@@ -1,7 +1,6 @@
 package com.parkinglot.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,4 +16,8 @@ public class Gate extends BaseModel{
     private String gateNumber;
     private GateType gateType;
     private GateStatus gateStatus;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parking_lot_id")
+    private ParkingLot parkingLot;
 }

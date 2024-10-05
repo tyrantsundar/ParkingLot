@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,11 +36,11 @@ public class ParkingFloorController {
 
     @PostMapping("/save")
     public ResponseEntity<ParkingFloorResponseDto> saveParkingFloor(@RequestBody ParkingFloorRequestDto request){
-        ParkingLotRequestDto parkingLotRequestDto = request.getParkingLot();
-        ParkingLot parkingLot = parkingLotService.getParkingLotByName(parkingLotRequestDto.getName());
+        String parkingLotName = request.getParkingLotName();
+        ParkingLot parkingLot = parkingLotService.getParkingLotByName(parkingLotName);
 
         List<ParkingSlotRequestDto> parkingSlotRequestDtos = request.getParkingSlots();
-        List<ParkingSlot> parkingSlots =  parkingSlotRequestDtos.stream()
+        List<ParkingSlot> parkingSlots =  parkingSlotRequestDtos == null ? new ArrayList<>() : parkingSlotRequestDtos.stream()
                                             .map(psDto -> parkingSlotService.getParkingSlotByNumber(psDto.getSlotNumber()))
                                             .collect(Collectors.toList());
 
@@ -50,15 +51,15 @@ public class ParkingFloorController {
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
-    @GetMapping("/{parkingFloorNumber}")
+    @GetMapping("/get/{parkingFloorNumber}")
     public ResponseEntity<ParkingFloorResponseDto> getParkingFloorByNumber(@PathVariable("parkingFloorNumber")String parkingFloorNumber){
         ParkingFloor parkingFloor = parkingFloorService.getParkingFloorByNumber(parkingFloorNumber);
         ParkingFloorResponseDto responseDto = modelMapper.map(parkingFloor, ParkingFloorResponseDto.class);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
-    @GetMapping("/all/{parkingLotName}")
-    public ResponseEntity<List<ParkingFloorResponseDto>> getAllParkingFloors(String parkingLotName){
+    @GetMapping("/get/all/{parkingLotName}")
+    public ResponseEntity<List<ParkingFloorResponseDto>> getAllParkingFloors(@PathVariable("parkingLotName") String parkingLotName){
         ParkingLot parkingLot = parkingLotService.getParkingLotByName(parkingLotName);
         List<ParkingFloor> allParkingFloors = parkingFloorService.getAllParkingFloors(parkingLot.getId());
         List<ParkingFloorResponseDto> parkingFloorResponseDtoList = allParkingFloors.stream()

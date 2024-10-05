@@ -29,11 +29,9 @@ public class ParkingLot extends BaseModel{
     @Enumerated(EnumType.STRING)
     private List<VehicleType> supportedVehicleTypes;
 
-    @ElementCollection(targetClass = ParkingLotStatus.class)
     @Enumerated(EnumType.STRING)
     private ParkingLotStatus parkingLotStatus;
 
-    @ElementCollection(targetClass = SlotAssignmentStrategyType.class)
     @Enumerated(EnumType.STRING)
     private SlotAssignmentStrategyType slotAssignmentStrategyType;
 }

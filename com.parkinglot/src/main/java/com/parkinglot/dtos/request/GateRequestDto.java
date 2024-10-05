@@ -15,4 +15,5 @@ public class GateRequestDto {
     private String gateNumber;
     private GateType gateType;
     private GateStatus gateStatus;
+    private String parkingLotName;
 }

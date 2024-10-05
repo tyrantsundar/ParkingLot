@@ -27,7 +27,6 @@ public class ParkingFloor extends BaseModel{
     @Enumerated(EnumType.STRING)
     private List<VehicleType> supportedVehicleTypes;
 
-    @ElementCollection(targetClass = ParkingFloorStatus.class)
     @Enumerated(EnumType.STRING)
     private ParkingFloorStatus parkingFloorStatus;
 

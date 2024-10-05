@@ -11,4 +11,5 @@ public class GateResponseDto {
     private String gateNumber;
     private GateType gateType;
     private GateStatus gateStatus;
+//    private ParkingLotResponseDto parkingLot;
 }
