@@ -4,11 +4,9 @@ import com.parkinglot.entities.Operator;
 
 public class OperatorNotFoundException extends RuntimeException{
     private String value;
-    private String type;
 
-    public OperatorNotFoundException(String value, String type) {
-        super(String.format("%s with %s not found.",type,value));
+    public OperatorNotFoundException(String value) {
+        super(String.format("OPERATOR-NOTFOUND with %s.",value));
         this.value = value;
-        this.type = type;
     }
 }

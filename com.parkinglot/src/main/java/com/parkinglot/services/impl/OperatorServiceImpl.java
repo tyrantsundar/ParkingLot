@@ -21,7 +21,7 @@ public class OperatorServiceImpl implements OperatorService {
     public Operator findByName(String name) {
         Optional<Operator> operatorOptional = operatorRepository.findByName(name);
         if(operatorOptional.isEmpty()){
-            throw new OperatorNotFoundException(name,"OPERATOR-Name");
+            throw new OperatorNotFoundException(name);
         }
         return operatorOptional.get();
     }
