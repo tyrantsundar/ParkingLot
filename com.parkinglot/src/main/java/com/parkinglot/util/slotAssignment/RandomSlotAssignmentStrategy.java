@@ -1,4 +1,4 @@
-package com.parkinglot.strategies;
+package com.parkinglot.util.slotAssignment;
 
 import com.parkinglot.entities.*;
 
@@ -6,11 +6,11 @@ import java.util.Optional;
 
 public class RandomSlotAssignmentStrategy implements SlotAssignmentStrategy{
     @Override
-    public Optional<ParkingSlot> assignSlot(ParkingLot parkingLot, VehicleType vehicleType) {
+    public Optional<ParkingSlot> checkParkingSlot(ParkingLot parkingLot, VehicleType vehicleType) {
         for(ParkingFloor parkingFloor : parkingLot.getParkingFloors()){
             for(ParkingSlot parkingSlot : parkingFloor.getParkingSlots()){
                 if(parkingSlot.getParkingSlotStatus().equals(ParkingSlotStatus.EMPTY)
-                    && parkingSlot.getVehicleType().equals(vehicleType)){
+                && parkingSlot.getVehicleType().equals(vehicleType)){
                     return Optional.of(parkingSlot);
                 }
             }

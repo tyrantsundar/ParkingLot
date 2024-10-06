@@ -1,35 +1,62 @@
 package com.parkinglot.controllers;
 
-import com.parkinglot.dtos.ResponseStatus;
-import com.parkinglot.dtos.request.IssueTicketRequestDTO;
-import com.parkinglot.dtos.response.IssueTicketResponseDTO;
-import com.parkinglot.entities.Ticket;
-import com.parkinglot.services.impl.TicketService;
+import com.parkinglot.dtos.request.TicketRequestDto;
+import com.parkinglot.dtos.response.TicketResponseDto;
+import com.parkinglot.entities.*;
+import com.parkinglot.services.*;
+import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
+@RestController
+@RequestMapping("/ticket")
 public class TicketController {
+
     private TicketService ticketService;
+    private VehicleService vehicleService;
+    private GateService gateService;
+    private ParkingSlotService parkingSlotService;
+    private ParkingFloorService parkingFloorService;
+    private ParkingLotService parkingLotService;
+    private VehicleOwnerService vehicleOwnerService;
+    private OperatorService operatorService;
+    private ModelMapper modelMapper;
 
-    public TicketController(TicketService ticketService){
+    public TicketController(TicketService ticketService, VehicleService vehicleService, GateService gateService,
+                            ParkingSlotService parkingSlotService, ParkingFloorService parkingFloorService,
+                            ParkingLotService parkingLotService, VehicleOwnerService vehicleOwnerService,
+                            OperatorService operatorService, ModelMapper modelMapper) {
         this.ticketService = ticketService;
+        this.vehicleService = vehicleService;
+        this.gateService = gateService;
+        this.parkingSlotService = parkingSlotService;
+        this.parkingFloorService = parkingFloorService;
+        this.parkingLotService = parkingLotService;
+        this.vehicleOwnerService = vehicleOwnerService;
+        this.operatorService = operatorService;
+        this.modelMapper = modelMapper;
     }
 
-    public IssueTicketResponseDTO issueTicket(IssueTicketRequestDTO request){
-        IssueTicketResponseDTO response = new IssueTicketResponseDTO();
-        try {
-            Ticket ticket = ticketService.issueTicket(
-                    request.getVehicleNumber(),
-                    request.getOwnerName(),
-                    request.getVehicleType(),
-                    request.getGateId(),
-                    request.getParkingLotId()
-            );
-            response.setTicket(ticket);
-            response.setResponseStatus(ResponseStatus.SUCCESS);
-            response.setMessage("Ticket Generated Successfully !!!");
-        }catch (Exception ex){
-            response.setResponseStatus(ResponseStatus.FAILURE);
-            response.setMessage(ex.getMessage());
-        }
-        return response;
+    @PostMapping("/issue")
+    public ResponseEntity<TicketResponseDto> issueTicket(@RequestBody TicketRequestDto request){
+
+        Gate gate = gateService.getGateByNumber(request.getGateNumber());
+        Vehicle vehicle = vehicleService.getVehicleByRegisterNumber(request.getVehicleNumber());
+        ParkingLot parkingLot = parkingLotService.getParkingLotByName(request.getParkingLotName());
+        VehicleType vehicleType = request.getVehicleType();
+        Operator operator = operatorService.findByName(request.getOperatorName());
+
+        Ticket ticket = ticketService.issueTicket(vehicle, operator, gate, parkingLot);
+        TicketResponseDto responseDto = modelMapper.map(ticket, TicketResponseDto.class);
+        return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
+
+    @GetMapping("/get/{ticketId}")
+    public ResponseEntity<TicketResponseDto> getTicket(@PathVariable("ticketId") int ticketId){
+        Ticket ticket = ticketService.getTicketById(ticketId);
+        TicketResponseDto responseDto = modelMapper.map(ticket, TicketResponseDto.class);
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
+
 }

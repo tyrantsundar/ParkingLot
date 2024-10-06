@@ -36,14 +36,14 @@ public class GateController {
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
-    @GetMapping("/{gateNumber}")
+    @GetMapping("/get/{gateNumber}")
     public ResponseEntity<GateResponseDto> getGateByNumber(@PathVariable("gateNumber")String gateNumber){
         Gate gate = gateService.getGateByNumber(gateNumber);
         GateResponseDto responseDto = modelMapper.map(gate, GateResponseDto.class);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
-    @GetMapping("/all")
+    @GetMapping("/get/all")
     public ResponseEntity<List<GateResponseDto>> getAllGates(){
         List<Gate> allGates = gateService.getAllGates();
         List<GateResponseDto> gateResponseDtoList = allGates.stream()
