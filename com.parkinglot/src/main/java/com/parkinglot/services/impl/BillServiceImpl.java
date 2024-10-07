@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class BillServiceImpl implements BillService {
@@ -54,11 +55,11 @@ public class BillServiceImpl implements BillService {
 
     @Override
     public Bill getBill(int billId) {
-        Bill bill = getBill(billId);
-        if(Objects.isNull(bill)){
+        Optional<Bill> billOptional = billRepository.findById(billId);
+        if(billOptional.isEmpty()){
             throw new BillNotFoundException(String.valueOf(billId));
         }
-        return bill;
+        return billOptional.get();
     }
 
 }
