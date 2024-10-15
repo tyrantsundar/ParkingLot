@@ -14,8 +14,7 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class
-Payment extends BaseModel{
+public class Payment extends BaseModel{
     private double amount;
 
     @Enumerated(EnumType.STRING)
